@@ -35,7 +35,7 @@ a) If two objects are equal, then they must have the same hash code.
 b) If two objects have the same hash code, they may or may not be equal.
 import java.util.HashMap;
  
-public class Apple {
+	public class Apple {
 	private String color;
  
 	public Apple(String color) {
@@ -61,12 +61,12 @@ public class Apple {
 		m.put(a2, 20);
 		System.out.println(m.get(new Apple("green")));
 	}
-}
+	}
 
 you MUST implement hashcode for this to work : 
-public int hashCode(){
-	return this.color.hashCode();	
-}
+	public int hashCode(){
+		return this.color.hashCode();	
+	}
 
 sinon java va d'abord vérifier que le hashcode est différents (ou pas) puis ensuite invoker equals. 
 
@@ -80,12 +80,14 @@ wrapper des types primitif par exemple (Integer pour int par exemple). Final pou
 Création de string plus rapide si nous ajoutons successivement des bout a un stringBuffer. 
 
 9) What is the way to store the integer value in a string object to an integer variable?
-String.valueOf(intVarable)
+	String.valueOf(intVarable)
 or
-Integer.toString(intVarable)
+	Integer.toString(intVarable)
 
 10) What are sorted collections in Java?
-Des collections, qui de part la structure de leur implémentation maintiennent un ordre dans la liste. Ce qui n'est pas le cas avec une liste<> = new ArrayList<>() par exemple, qui ne sera trié lors de l'invocation de Collection.sort(...).  
+Des collections, qui de part la structure de leur implémentation maintiennent un ordre dans la liste. Ce qui n'est pas le cas avec une 	liste<> = new ArrayList<>() 
+par exemple, qui ne sera trié lors de l'invocation de 
+	Collection.sort(...).  
 
 11) Why is String class declared as final class?
 CF raison de sécurité dans le 7). 
@@ -108,8 +110,9 @@ As others have already pointed out they provide a means for using an object as a
 
 16) What is the purpose of reflection API?
 c'est l'appel des methods d'un objet sans les connaitre à 'lavance : 
-type : Method method = foo.getClass().getMethod("doSomething", null);
-method.invoke(foo, null);
+type : 
+	Method method = foo.getClass().getMethod("doSomething", null);
+	method.invoke(foo, null);
 
 One very common use case in Java is the usage with annotations. JUnit 4, for example, will use reflection to look through your classes for methods tagged with the @Test annotation, and will then call them when running the unit test.
 
@@ -132,37 +135,37 @@ Native memory leaks: associated with any continuously growing memory utilization
 
 
 21) What is the order of execution of blocks in a Java program?
-package pack2;
+	package pack2;
+	
+	public class Parent {    
+	    public Parent() {
+	        System.out.println("Parent Constructor");
+	    }    
+	    static {
+	        System.out.println("Parent static block");    
+	    }    
+	    {
+	        System.out.println("Parent initialisation  block");
+	    }
+	}
 
-public class Parent {    
-    public Parent() {
-        System.out.println("Parent Constructor");
-    }    
-    static {
-        System.out.println("Parent static block");    
-    }    
-    {
-        System.out.println("Parent initialisation  block");
-    }
-}
-
-package pack2;
-
-public class Child extends Parent {    
-    {
-        System.out.println("Child initialisation block");
-    }
-    static {
-        System.out.println("Child static block");
-    }
-
-    public Child() {
-        System.out.println("Child Constructor");
-    }    
-    public static void main(String[] args) {
-        new Child();    
-    }
-}
+	package pack2;
+	
+	public class Child extends Parent {    
+	    {
+	        System.out.println("Child initialisation block");
+	    }
+	    static {
+	        System.out.println("Child static block");
+	    }
+	
+	    public Child() {
+	        System.out.println("Child Constructor");
+	    }    
+	    public static void main(String[] args) {
+	        new Child();    
+	    }
+	}
 
 The output of the above code will be
 
@@ -185,19 +188,19 @@ on doit changer la signature. le changement de signature n'est pas impacté par 
 overriding : 
 a) The method argument list in overridden and overriding methods must be exactly same If they don’t match, you will end up with an overloaded method.
 b) The return type of overriding method can be child class of return type declared in overridden method.
-public class SuperClass {
-    //Overriden method
-    public Number sum(Integer a, Integer b) {
-        return a + b;
-    }
-}
-class SubClass extends SuperClass {
-    //Overriding method
-    @Override
-    public Integer sum(Integer a, Integer b) {      //Integer extends Number; so it's valid
-        return a + b;
-    }
-}
+	public class SuperClass {
+	    //Overriden method
+	    public Number sum(Integer a, Integer b) {
+	        return a + b;
+	    }
+	}
+	class SubClass extends SuperClass {
+	    //Overriding method
+	    @Override
+	    public Integer sum(Integer a, Integer b) {      //Integer extends Number; so it's valid
+	        return a + b;
+	    }
+	}
 c) Above all rules, private, static and final methods can not be overridden in java in any way. As simple as that !!
 d) Overriding method can not throw checked Exception higher in hierarchy than thrown by overridden method. Let’s say for example overridden method in parent class throws FileNotFoundException, the overriding method in child class can throw FileNotFoundException; but it is not allowed to throw IOException or Exception, because IOException or Exception are higher in hierarchy i.e. super classes of FileNotFoundException.
 e)Also note that overriding method can not reduce the access scope of overridden method. Put in simple words, if overridden method in parent class is protected, then overriding method in child class can not be private. It must be either protected (same access) or public (wider access).
@@ -212,75 +215,75 @@ Extend Thread itself and override its run() method.
 24) What is inter thread communication?
 wait, notify, notifyall
 
-class Chat {
-    boolean flag = false;
-
-    public synchronized void Question(String msg) {
-        if (flag) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println(msg);
-        flag = true;
-        notify();
-    }
-
-    public synchronized void Answer(String msg) {
-        if (!flag) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println(msg);
-        flag = false;
-        notify();
-    }
-}
-
-class T1 implements Runnable {
-    Chat m;
-    String[] s1 = { "Hi", "How are you ?", "I am also doing fine!" };
-
-    public T1(Chat m1) {
-        this.m = m1;
-        new Thread(this, "Question").start();
-    }
-
-    public void run() {
-        for (int i = 0; i < s1.length; i++) {
-            m.Question(s1[i]);
-        }
-    }
-}
-
-class T2 implements Runnable {
-    Chat m;
-    String[] s2 = { "Hi", "I am good, what about you?", "Great!" };
-
-    public T2(Chat m2) {
-        this.m = m2;
-        new Thread(this, "Answer").start();
-    }
-
-    public void run() {
-        for (int i = 0; i < s2.length; i++) {
-            m.Answer(s2[i]);
-        }
-    }
-}
-public class TestThread {
-    public static void main(String[] args) {
-        Chat m = new Chat();
-        new T1(m);
-        new T2(m);
-    }
-}
+	class Chat {
+	    boolean flag = false;
+	
+	    public synchronized void Question(String msg) {
+	        if (flag) {
+	            try {
+	                wait();
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	        System.out.println(msg);
+	        flag = true;
+	        notify();
+	    }
+	
+	    public synchronized void Answer(String msg) {
+	        if (!flag) {
+	            try {
+	                wait();
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	
+	        System.out.println(msg);
+	        flag = false;
+	        notify();
+	    }
+	}
+	
+	class T1 implements Runnable {
+	    Chat m;
+	    String[] s1 = { "Hi", "How are you ?", "I am also doing fine!" };
+	
+	    public T1(Chat m1) {
+	        this.m = m1;
+	        new Thread(this, "Question").start();
+	    }
+	
+	    public void run() {
+	        for (int i = 0; i < s1.length; i++) {
+	            m.Question(s1[i]);
+	        }
+	    }
+	}
+	
+	class T2 implements Runnable {
+	    Chat m;
+	    String[] s2 = { "Hi", "I am good, what about you?", "Great!" };
+	
+	    public T2(Chat m2) {
+	        this.m = m2;
+	        new Thread(this, "Answer").start();
+	    }
+	
+	    public void run() {
+	        for (int i = 0; i < s2.length; i++) {
+	            m.Answer(s2[i]);
+	        }
+	    }
+	}
+	public class TestThread {
+	    public static void main(String[] args) {
+	        Chat m = new Chat();
+	        new T1(m);
+	        new T2(m);
+	    }
+	}
 When above program is complied and executed, it produces following result:
 
 Hi
@@ -310,6 +313,8 @@ Package Names : Acceptable: com.iwombat.ui  Unacceptable:com.iwombat.user_interf
 Class and Interface Names : Acceptable: class FoodItem  interface Digestable  Unacceptable: class fooditem  class Crackers  interface Eat
 http://www.iwombat.com/standards/JavaStyleGuide.html
 
+outil pour vérifier sous eclipse : PMD & Checkstyle.
+
 
 30) What is a literal and what is special about String literals?
 
@@ -320,20 +325,20 @@ cf pattern
 32) How will you create a Singleton class? Is it thread safe?
 - création -> voir singleton
 - si l'implémentation l'a supporté, c'est thread safe. 
-public static Singleton getInstance()
-	{	
-		if (INSTANCE == null)
-		{ 	
-			synchronized(Singleton.class)
-			{
-				if (INSTANCE == null)
-				{	INSTANCE = new Singleton();
+	public static Singleton getInstance()
+		{	
+			if (INSTANCE == null)
+			{ 	
+				synchronized(Singleton.class)
+				{
+					if (INSTANCE == null)
+					{	INSTANCE = new Singleton();
+					}
 				}
 			}
+			return INSTANCE;
 		}
-		return INSTANCE;
-	}
-
+		
 
 33) What is the difference between throw and throws clause?
 throw envoi une exception
@@ -402,103 +407,103 @@ copie par valeur & copie par pointeur.
 inner class : ce sont les classes définit dans une classe (en tant que champs quoi). 
 1. Static Nested Classes
 
-class Outer {
-	static class Inner {
-		void go() {
-			System.out.println("Inner class reference is: " + this);
+	class Outer {
+		static class Inner {
+			void go() {
+				System.out.println("Inner class reference is: " + this);
+			}
 		}
 	}
-}
- 
-public class Test {
-	public static void main(String[] args) {
-		Outer.Inner n = new Outer.Inner();
-		n.go();
+	 
+	public class Test {
+		public static void main(String[] args) {
+			Outer.Inner n = new Outer.Inner();
+			n.go();
+		}
 	}
-}
 Inner class reference is: Outer$Inner@19e7ce87
 
 2. Member Inner Class
 
 Member class is instance-specific. It has access to all methods, fields, and the Outer's this reference.
 
-public class Outer {
-    private int x = 100;
- 
-    public void makeInner(){
-        Inner in = new Inner();
-        in.seeOuter();
-    }
- 
-    class Inner{
-        public void seeOuter(){
-            System.out.println("Outer x is " + x);
-            System.out.println("Inner class reference is " + this);
-            System.out.println("Outer class reference is " + Outer.this);
-        }
-    }
- 
-    public static void main(String [] args){
-    	Outer o = new Outer();
-        Inner i = o.new Inner();
-        i.seeOuter();
-    }
-}
+	public class Outer {
+	    private int x = 100;
+	 
+	    public void makeInner(){
+	        Inner in = new Inner();
+	        in.seeOuter();
+	    }
+	 
+	    class Inner{
+	        public void seeOuter(){
+	            System.out.println("Outer x is " + x);
+	            System.out.println("Inner class reference is " + this);
+	            System.out.println("Outer class reference is " + Outer.this);
+	        }
+	    }
+	 
+	    public static void main(String [] args){
+	    	Outer o = new Outer();
+	        Inner i = o.new Inner();
+	        i.seeOuter();
+	    }
+	}
 Outer x is 100
 Inner class reference is Outer$Inner@4dfd9726
 Outer class reference is Outer@43ce67ca
 
 3. Method-Local Inner Classes
 
-public class Outer {
-	private String x = "outer";
- 
-	public void doStuff() {
-		class MyInner {
-			public void seeOuter() {
-				System.out.println("x is " + x);
+	public class Outer {
+		private String x = "outer";
+	 
+		public void doStuff() {
+			class MyInner {
+				public void seeOuter() {
+					System.out.println("x is " + x);
+				}
 			}
+	 
+			MyInner i = new MyInner();
+			i.seeOuter();
 		}
- 
-		MyInner i = new MyInner();
-		i.seeOuter();
+	 
+		public static void main(String[] args) {
+			Outer o = new Outer();
+			o.doStuff();
+		}
 	}
- 
-	public static void main(String[] args) {
-		Outer o = new Outer();
-		o.doStuff();
-	}
-}
 x is outer
-public class Outer {
-	private static String x = "static outer";
- 
-	public static void doStuff() {
-		class MyInner {
-			public void seeOuter() {
-				System.out.println("x is " + x);
+	public class Outer {
+		private static String x = "static outer";
+	 
+		public static void doStuff() {
+			class MyInner {
+				public void seeOuter() {
+					System.out.println("x is " + x);
+				}
 			}
+	 
+			MyInner i = new MyInner();
+			i.seeOuter();
 		}
- 
-		MyInner i = new MyInner();
-		i.seeOuter();
+	 
+		public static void main(String[] args) {
+			Outer.doStuff();
+		}
 	}
- 
-	public static void main(String[] args) {
-		Outer.doStuff();
-	}
-}
 x is static outer
 
 4. Anonymous Inner Classes
 
 This is frequently used when you add an action listener to a widget in a GUI application.
 
-button.addActionListener(new ActionListener(){
-     public void actionPerformed(ActionEvent e){
-         comp.setText("Button has been clicked");
-     }
-});
+	button.addActionListener(new ActionListener(){
+	     public void actionPerformed(ActionEvent e){
+	         comp.setText("Button has been clicked");
+	     }
+	});
 
 
 
