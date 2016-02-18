@@ -504,3 +504,12 @@ button.addActionListener(new ActionListener(){
 
 50) What are the various memory areas in JVM and what kind of information is stored in each of them?
 
+Personal question : 
+
+1) StringBuilder vs StringBuffer : 
+StringBuilder est plus rapide
+StringBuffer est synchronized. 
+
+2) HashMap vs HashTable
+Hashtable is synchronized, whereas HashMap is not. This makes HashMap better for non-threaded applications, as unsynchronized Objects typically perform better than synchronized ones.
+
