@@ -41,7 +41,7 @@ The contract between equals() and hashCode() is:
 - b) If two objects have the same hash code, they may or may not be equal.
 
 	import java.util.HashMap;
- 
+	
 	public class Apple {
 	private String color;
  
