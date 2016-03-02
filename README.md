@@ -40,6 +40,7 @@ The contract between equals() and hashCode() is:
 - a) If two objects are equal, then they must have the same hash code.
 - b) If two objects have the same hash code, they may or may not be equal.
 
+
 	import java.util.HashMap;
 	
 	public class Apple {
