@@ -596,3 +596,219 @@ Personal question :
 
 Hashtable is synchronized, whereas HashMap is not. This makes HashMap better for non-threaded applications, as unsynchronized Objects typically perform better than synchronized ones.
 
+
+
+Préambule :
+
+•	pour cet entretien, toutes les questions concernent Java, spring, hibernate, xml
+•	toutes les questions sont « à tiroir » et donnent lieu éventuellement à d'autres questions en fonction des réponses apportées par le candidat.
+
+Liste des questions :
+
+•	Citez les différents types de visibilité en java (private, public, package, default = package level)
+
+•	Qu’est-ce qui différencient ces visibilités ?
+
+•	Si on ne met rien comme visibilité devant un attribut ou une méthode dans une classe, quelle est sa visibilité ? (package level)
+
+•	Même question pour une interface ? 
+
+
+•	Quelles sont les nouveautés apportées par java 1.5 ? (enums, generiques, autoboxing / unboxing, for with iterator, variable arguments, adnotations)
+
+•	Quel est l’intérêt des types génériques ? (type checking at compilation, desavantage un hierarchy des classes a creer si elle n'existe pas deja
+
+•	Qu’est-ce que l’auto-boxing ? (les types primitives des donnes <int> sont convertis automatiquement au classes meres <Integer>)
+
+•	Est-ce que l’inverse est possible ? Comment ça s’appelle ? (Oui - unboxing)
+
+
+•	Qu’est-ce qu’une interface ? A quoi cela sert-il ?
+
+
+•	Qu’est-ce qu’une classe abstraite ?
+
+•	Une classe abstraite peut-elle avoir un constructeur ?
+
+•	Quelle est la différence avec une interface ? Quel est l’intérêt de l’une par rapport à l’autre ?
+
+•	Comment accède-t-on aux méthodes / attributs d’une classe mère ?
+
+•	Est-ce qu’on peut appeler le constructeur de la classe mère n’importe où dans son propre constructeur ?
+
+•	Comment fait-on pour qu’un attribut ne soit pas modifiable ?
+
+•	Est-ce qu’on peut utiliser ce modificateur (final) à d’autres endroits que sur des attributs ? Qu’est-ce qu’il se passe alors ?
+
+•	Est-ce que le paramètre d’une méthode (de type int par exemple) est modifié à la sortie de la méthode si la méthode le modifie ?
+
+•	Pouvez-vous nous citer les différents types de collections en java ? (List, Set, Map, Queue)
+
+•	Donnez nous un exemple d’implémentation de List ? (ArrayList)
+
+•	Y a-t-il d’autres implémentations ? (LinkedList)
+
+•	Quelle est la différence entre les deux ? Quand utiliser l’une ou l’autre ?
+
+
+•	Qu’est ce que la sérialisation ? A quoi ça sert ?
+
+•	Comment sérialise-t-on un objet ? (implémenter Serializable)
+
+•	Il y a une autre interface qui permet de sérialiser un objet, laquelle ?
+
+•	A quoi sert le mot clé transient ?
+
+
+•	A quoi sert le mot clé volatile ?
+
+
+•	Comment met-on en place le multi threading ? (la classe hérite de Thread)
+
+•	Il y a une autre façon de le faire, laquelle ? (implémenter Runnable)
+
+•	Pourquoi cette solution est-elle moins utilisée ?
+
+•	Comment « sécuriser » un donnée partagée dans un environnement multi threadé ?
+
+•	A quel niveau est positionné le lock quand on utilise « synchronized » ?
+
+•	Si on met un « synchronized » sur une  méthode statique, où est placé le lock ?
+
+
+•	Comment sont gérées les exceptions en java ?
+
+•	Quelles sont les différentes méthodes pour lever une exception ?
+
+•	Est-ce qu’on peut gérer les exceptions sans block try catch ?
+
+•	Quand est-ce qu'on passe par le block finally ?
+Example  - qu'est-ce qu'on imprime si le throw est commenté ou pas ?
+        public static void main(String argv[]) {
+             try{
+                    System.out.println("A");
+                    //throw new Exception("Help me !");
+             } catch(Exception e) {
+                    System.out.println("B");
+             } finally {
+                    System.out.println("C");
+             }
+
+•	Quand on ne gère pas un type d’exception et qu’elle est levée, qu’est-ce qu’il se passe ?
+
+
+•	Citez-moi des design pattern que vous connaissez
+
+•	Pouvez-vous m’écrire une implémentation du pattern singleton ?
+•	Quels sont les 3 types pricipales des design patterns ? C'est quoi le but de chaque group ? Donnez un example pour chaqun.
+
+•	Qu’est-ce que spring ? Comment cela fonctionne-t-il ? A quoi ça sert ?
+
+•	Quel design pattern est utilisé par spring ? Inversion of control and dependency injection (http://martinfowler.com/articles/injection.html) Pourquoi cela ?
+
+
+•	Qu’est-ce qu’hibernate ? Comment cela fonctionne-t-il ? A quoi ça sert ?
+
+•	Qu’est-ce que le lazy-loading ?
+
+•	Quel design pattern est utilisé dans ce cas ?
+
+
+•	Avec quoi lisez-vous un fichier xml en java ? (SAX ou DOM)
+
+•	Quelle est la différence entre ces parseurs ? Quel est le plus rapide
+
+•	Si j’ai un gros fichier xml (en taille et profondeur de tags), quel parseur je choisis pour le lire ? Pourquoi ? si je veux avoir la valeur d'une donne quel parseur je l'utiliser ?
+
+•	Difference entre Hashtable (all methods synchronized, early collection, pretty slow), Hashmap (nothing synchronized, fast), ConcurrentHashMap (synchronized for fast throughoutput)
+
+•	Comme est-ce qu'un iterateur modifie l'acces a une collection quand on est en train d'inserer et d'effacer des ellements ? Pour un HashSet (pas synchronizé), pour un qui est synchronizé ?
+	Example : 
+      public class Test {
+         private synchronized Set<Integer> set = new HashSet<Integer>();
+         
+         public synchronized void insert(Integer value) { 
+             set.add(value);
+         }
+
+          public synchronized void delete(Integer value) { 
+             set.remove(value);
+         }
+
+         public void list(Integer value) { 
+              for(Integer it : set) {
+                  System.out.print(it + " ");
+              }              
+         }
+    Quel est le probleme ? (l'iterateur va proteger contre les insertion, mais s'il y a un autre thread qui efface un element on aura une exception ConcurrentModificationException; la classe n'est pas completement thread safe).
+
+
+•	Principe de rangement des éléments dans une hashMap (Détails des fonctions hashcode et equals, pourquoi reimplementer un demand la reimplementation de l'autre); comme est-ce qu'un hashmap est implementé dpdv algorithmique? (liste chainé avec des listes des elements pour chaque hashcode) Mais pour le Hashmap (listes chaines pour les elements du meme hashcode, pointer vers le tete des liste pour chaque hashcode - quel est l'avantage de ca ?)
+
+
+•	JAVA - questions generales 
+
+- Types primitifs et leurs tailles en mémoire (ca depend de la machine virtuelle et du SO)
+- Fonction et utilisation du mot clef static
+- fonction et utilisation du mot clef synchronized
+- Les différents types de Collections (List, Set, Map,Vector etc)
+- Qu'est-ce que l'EDT
+- Swing Worker
+- Exemple de Designe Patterns avec description de 2 d'entre eux 
+- Le designe pattern PROXY
+- Les options de lancement -xms et -xmx et/ou autres exemples d'options au lancement d'une application JAVA
+- Apports de Java 5, 6 et 7.
+- Différence entre héritage et composition ? Donnez un exemple concret. Avantage / Inconvénient.
+- Polymorphisme, qu’est-ce que ?
+- Comment fonctionne le class loader ?
+- Avantage / inconvénient du java et du C# ?
+- Le garbage collector - comme est-ce qu'il fonctionne ? Est-ce qu'il peut donner des fuites de memoire ? (Oui, quand ?) Est-ce qu'il y a de maniere d'interactionner avec lui (oui, meme en code System.gc() ? - qu'est ce que ca fait, quand est ce que ca pourrait etre utile ? )
+-Qu’est-ce que javax ? C’est le package qui contient les composants graphiques.
+
+2) J2EE
+- Que permet Spring
+- Qu'est-ce que l'injection de dépendance
+- JNDI
+- JNI
+- JMX 
+
+3) SQL
+- Tables à créer pour modéliser l'emprunt de livres par des membres d'une librairie 
+- Type de clé primaire pour la table livre
+- Méthode d'optimisation de requêtes
+- Les différents types d'index
+- Les informations dans un plan d'exécution
+
+
+•	Quelle est la syntaxe pour créer une table en SQL
+•	Connaissez-vous la notion de For Enquy ?
+•	Left / Right (internal / external) join ?
+•	Avez-vous optimiser des recherches ? Index ? Pouvez-vous mettre un index sur toute les colonnes ?
+•	1 table avec les « personnes », une autre avec trois couleurs de cheveux, pouvez-vous mettre un index sur toute les colonnes ?
+•	Jointure, a quoi cela sert ?
+•	Ecrire la requête des personnes qui ont la couleur de cheveux bruns et blonds.
+
+4) UML
+- Agrégation
+- Composition
+- Représentation graphique sur un schéma UML
+
+5) Finance
+- Swap de taux; vanilla, position, quels sont les attributes d'une position, qu'est ce que ca veut dire FO, BO, MO, Risk, Var, strategie, jambe, In the money, out of money, coupon et zero coupon,
+Advanced : fat-tail distribution, what are the greeks and which ones are there, deal blotter, courbe de taux et qu'est ce que ca veut dire de le calibrer, parametres de marches , BO to FO (why ?)
+
+Quelques notions deja definis : 
+La volatilité mesure l'importance des fluctuations de valeur d'un actif et donc son risque. Elle se calcule mathématiquement par l'écart type des rentabilités de l'actif.
+  
+La sensibilité d'une obligation mesure la variation de sa valeur en pourcentage induite par une variation donnée du taux d'intérêt. Mathématiquement, elle est égale à la valeur absolue de la dérivée de la valeur de l'obligation par rapport au taux d'intérêt, divisée par la valeur de l'obligation.
+ 
+Un produit exotique désigne des produits financiers complexes et peu fréquent, principalement vendus à des investisseurs sophistiqués, qui peuvent permettre à un émetteur de trouver des fonds à un coût attractif mais souvent en contrepartie d'engagements qui peuvent se révéler coûteux à terme.
+  
+Le principe d'un swap de taux d'intérêt est de comparer un taux variable et un taux garanti et de se verser mutuellement les différentiels de taux d'intérêt sans échange en capital. Le swap de taux est particulièrement adapté à la gestion du risque de taux à long terme en entreprise. 
+Le marché des swaps a connu un essor considérable et les banques occupent un rôle déterminant dans l'animation de ce marché. Les trésoriers d'entreprise apprécient la souplesse du swap qui leur permet de choisir la durée, le taux variable de référence et le notionnel. Le swap conclu entre une banque et une entreprise peut être liquidé à tout moment en calculant la valeur actuelle des flux fixes prévus au taux du marché et en la comparant au notionnel initial. L'utilisation du swap est également fréquente pour gérer le risque de taux sur des actifs à taux variable ou à taux fixe.
+ 
+La value at risk (VAR) représente la perte potentielle maximale d'un Investisseur sur la Valeur d'un actif ou d'un portefeuille d'actifs financiers compte tenu d'un horizon de détention et d'un intervalle de confiance. Elle se calcule à partir d'un échantillon de données historiques ou se déduit des lois statistiques habituelles.
+
+
+
+
