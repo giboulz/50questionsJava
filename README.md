@@ -435,6 +435,9 @@ vérifier la nature d'un objet.
 
 40) How many package statements can a program have?
 
+package - only one
+
+imports - unlimited. You can have as many import statements in your class as you want.
 
 41) Are all the classes specified in import statement actually imported?
 
