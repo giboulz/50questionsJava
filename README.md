@@ -813,5 +813,146 @@ Le marché des swaps a connu un essor considérable et les banques occupent un r
 La value at risk (VAR) représente la perte potentielle maximale d'un Investisseur sur la Valeur d'un actif ou d'un portefeuille d'actifs financiers compte tenu d'un horizon de détention et d'un intervalle de confiance. Elle se calcule à partir d'un échantillon de données historiques ou se déduit des lois statistiques habituelles.
 
 
+-----------------------------------------------------------
 
+Personal question 2 : 
+1) 
+Soap vs Rest : 
+Soap est plus carré car le contract est définie, mais plus lourd, car les devs dependent de la WSDL.
+Soap est forcement en XML, le xml est plus lourd que le json (balise fermante obligatoire). le Soap est transactionnel, en REST il faut gérer la transaction soit meme. et les transactions peuvent être distribution (1 avec un noeud, la requete suivante avec un autre noeud ...). 
+
+2) TU 
+princiape du AAA : Arrange-Act-Assert (AAA) Pattern ( http://www.typemock.com/unit-test-patterns-for-net )
+il y a d'autre pattern pour les TU, mais dans le AAA, on pose l'objet a tester (Arrange), on l'exécute (Act), et on test (Assert). 
+
+3) BDD - propriété ACID. 
+atomicité : La propriété d'atomicité assure qu'une transaction se fait au complet ou pas du tout : si une partie d'une transaction ne peut être faite, il faut effacer toute trace de la transaction et remettre les données dans l'état où elles étaient avant la transaction. L'atomicité doit être respectée dans toutes situations, comme une panne d'électricité, une défaillance de l'ordinateur, ou une panne d'un disque magnétique.
+
+cohérence : 
+La propriété de cohérence assure que chaque transaction amènera le système d'un état valide à un autre état valide. Tout changement à la base de données doit être valide selon toutes les règles définies, incluant mais non limitées aux contraintes d'intégrité, aux rollbacks en cascade, aux déclencheurs de base de données, et à toutes combinaisons d'évènements.
+
+isolation : Toute transaction doit s'exécuter comme si elle était la seule sur le système. Aucune dépendance possible entre les transactions. La propriété d'isolation assure que l'exécution simultanée de transactions produit le même état que celui qui serait obtenu par l'exécution en série des transactions. Chaque transaction doit s'exécuter en isolation totale : si T1 et T2 s'exécutent simultanément, alors chacune doit demeurer indépendante de l'autre.
+
+durabilité : La propriété de durabilité assure que lorsqu'une transaction a été confirmée, elle demeure enregistrée même à la suite d'une panne d'électricité, d'une panne de l'ordinateur ou d'un autre problème. Par exemple, dans une base de données relationnelle, lorsqu'un groupe d'énoncés SQL ont été exécutés, les résultats doivent être enregistrés de façon permanente, même dans le cas d'une panne immédiatement après l'exécution des énoncés.
+
+4) principal avantage de Spring (IOC)
+changement de l'impléméntation d'un service facilement. 
+
+5) HIBERNATE : N+1 select
+Let’s assume that you’re writing code that’d track the price of mobile phones. Now, let’s say you have a collection of objects representing different Mobile phone vendors (MobileVendor), and each vendor has a collection of objects representing the PhoneModels they offer.
+
+To put it simple, there’s exists a one-to-many relationship between MobileVendor:PhoneModel.
+
+MobileVendor Class
+
+Class MobileVendor{
+        long vendor_id;
+        PhoneModel[] phoneModels;
+        ...
+ }
+Okay, so you want to print out all the details of phone models. A naive O/R implementation would SELECT all mobile vendors and then do N additional SELECTs for getting the information of PhoneModel for each vendor.
+
+-- Get all Mobile Vendors
+ SELECT * FROM MobileVendor;
+-- For each MobileVendor, get PhoneModel details
+ SELECT * FROM PhoneModel WHERE MobileVendor.vendorId=?
+As you see, the N+1 problem can happen if the first query populates the primary object and the second query populates all the child objects for each of the unique primary objects returned.
+
+Resolve N+1 SELECTs problem
+
+(i) HQL fetch join
+
+"from MobileVendor mobileVendor join fetch mobileVendor.phoneModel PhoneModels"
+Corresponding SQL would be (assuming tables as follows: t_mobile_vendor for MobileVendor and t_phone_model for PhoneModel)
+
+SELECT * FROM t_mobile_vendor vendor LEFT OUTER JOIN t_phone_model model ON model.vendor_id=vendor.vendor_id
+(ii) Criteria query
+
+Criteria criteria = session.createCriteria(MobileVendor.class);
+criteria.setFetchMode("phoneModels", FetchMode.EAGER);
+In both cases, our query returns a list of MobileVendor objects with the phoneModels initialized. Only one query needs to be run to return all the PhoneModel and MobileVendor information required
+
+6 ) HIBERANTE : stratégie de chargement
+
+Lazy Loading : 
+
+Le chargement à la demande (ou " lazy loading ") est la stratégie native mise en œuvre par Hibernate. Elle consiste à ne charger que le minimum de données, puis de générer une nouvelle requête SQL pour récupérer les données supplémentaires lorsque celles-ci seront demandées par le programme.
+
+Dans la pratique, Hibernate charge tous champs de la table principale, et les clés étrangères sont stockées sous forme simplifiée (seul l'ID est renseigné), ce que l'on nomme un proxy. Lorsque le programme essaiera d'accéder aux membres de ce proxy, Hibernate générera une requête SQL et récupérera les données nécessaires afin de le remplir…
+
+Avantage : Le principal avantage du lazy-loading est bien entendu sa transparence. Le programme utilise les objets du Domaine en toute simplicité, et seules les données vraiment nécessaires sont chargées.
+
+Inconvénients : Si séduisante qu'elle puisse paraître, cette approche présente les défauts suivants :
+
+Absence de maîtrise du chargement : chaque appel peut potentiellement provoquer une requête en base de données, et ce, de manière complètement transparente et incontrôlable. On peut ainsi assister à des effondrements spectaculaires des performances de l'application, dus à un excès de requêtes SQL. De plus, l'utilisation de certaines librairies, basées notamment sur l'introspection _ telles que JAXB ou Dozer_ provoque le chargement de la totalité du graphe d'objet lors de la sérialization du graphe d'objets
+N+1 select : corollaire du point précédent, le chargement de collections se traduit par un nombre rédhibitoire de requêtes. Regardons l'exemple suivant :
+ Sélectionnez
+List<Address> addressList = person.getAddressList() ; (1)
+for (Address address : addressList)
+{
+    displayCity(address.getCity(), address.getZipCode()) ; (2)
+…
+}
+L'appel (1) génère une requête SQL remontant la liste des identifiants des adresses composant la liste, et que chaque appel (2) génère une autre requête SQL afin de remplir la totalité de l'objet Address, soit au total N+1 requêtes (N étant la cardinalité de la liste).
+
+Seule solution, non pas pour maîtriser mais pour diagnostiquer ce genre de problématique : passer le paramètre de configuration " show_sql " à 'true' afin de visualiser en développement les requêtes générées automatiquement par les proxies Hibernate.
+
+Eager fetching
+
+Solution diamétralement opposée au chargement à la demande, le " eager-fetching " consiste à systématiquement charger l'intégralité du graphe d'objets associés.
+
+Techniquement, il suffit de d'ajouter l'attribut " lazy " à 'false' (ou fetch='join') pour toutes les associations (one-to-one, many-to-one, one-to-many) et le tour est joué.
+
+Avantage : 
+
+Tout comme le chargement à la demande, cette stratégie de chargement présente l'avantage de la simplicité. De plus, une fois la donnée chargée, cette dernière est entièrement et immédiatement disponible, sans génération de requête SQL supplémentaire.
+
+Inconvénient : 
+
+Vous l'aurez deviné, là où le bât blesse, c'est justement au temps de chargement de votre graphe d'objets, qui peut vite s'avérer rédhibitoire avec un schéma classique (quelques associations suffisent à faire exploser les performances).
+
+Si on y ajoute une grande propension au syndrome du produit cartésien (cf. encadré), vous comprendrez bien que cette approche est à bannir de toute application manipulant un graphe d'objet un tant soit peu conséquent.
+
+Règle n°1 : pas plus d'une collection à la fois
+
+Le chargement des collections (association many-to-one, coté " one ") est un point délicat de la programmation avec Hibernate.
+
+En effet le chargement de plusieurs collections en parallèle risque de fortement dégrader les performances de votre application car une telle requête remonte en général trop de données (produit cartésien). En effet, le résultat de la requête SQL est composé de la combinaison des résultats possibles sur chaque jointure, comportant une multitude de doublons qu'Hibernate devra éliminer.
+
+A titre d'exemple, une requête renvoyant 100 éléments, chacun associé à deux collections de 10 éléments chacun, serait constituée de (100*10*10) = 10 000 lignes de résultats.
+
+Outre le temps de traitement par Hibernate, le temps de transfert d'un tel volume de résultat achèvera de réduire les performances de votre application à néant !
+
+
+7) CleanCode : SOLID
+https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)
+
+The principles, when applied together, intend to make it more likely that a programmer will create a system that is easy to maintain and extend over time. 
+
+single responsibility : a class should have only a single responsibility (i.e. only one potential change in the software's specification should be able to affect the specification of the class)
+Martin defines a responsibility as a reason to change, and concludes that a class or module should have one, and only one, reason to change. As an example, consider a module that compiles and prints a report. Imagine such a module can be changed for two reasons. First, the content of the report could change. Second, the format of the report could change. These two things change for very different causes; one substantive, and one cosmetic. The single responsibility principle says that these two aspects of the problem are really two separate responsibilities, and should therefore be in separate classes or modules. It would be a bad design to couple two things that change for different reasons at different times.
+
+
+open-closed : “software entities … should be open for extension, but closed for modification.”
+Bertrand Meyer is generally credited for having originated the term open/closed principle, which appeared in his 1988 book Object Oriented Software Construction.
+
+A module will be said to be open if it is still available for extension. For example, it should be possible to add fields to the data structures it contains, or new elements to the set of functions it performs.
+A module will be said to be closed if it is available for use by other modules. This assumes that the module has been given a well-defined, stable description (the interface in the sense of information hiding).
+
+Liskov substitution : “objects in a program should be replaceable with instances of their subtypes without altering the correctness of that program.” See also design by contract.
+Liskov's notion of a behavioral subtype defines a notion of substitutability for mutable objects; that is, if S is a subtype of T, then objects of type T in a program may be replaced with objects of type S without altering any of the desirable properties of that program (e.g. correctness).
+
+interface segregation : “many client-specific interfaces are better than one general-purpose interface.”
+Within object-oriented design, interfaces provide layers of abstraction that facilitate conceptual explanation of the code and create a barrier preventing dependencies.
+
+According to many software experts who have signed the Manifesto for Software Craftsmanship, writing well-crafted and self-explanatory software is almost as important as writing working software.[4] Using interfaces to further describe the intent of the software is often a good idea.
+
+A system may become so coupled at multiple levels that it is no longer possible to make a change in one place without necessitating many additional changes.[1] Using an interface or an abstract class can prevent this side effect.
+
+
+dependency inversion :  one should “Depend upon Abstractions. Do not depend upon concretions.”
+https://en.wikipedia.org/wiki/Dependency_inversion_principle
+
+8) SOA
+Service oriented Architecture.
 
